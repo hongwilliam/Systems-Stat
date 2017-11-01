@@ -24,7 +24,7 @@ void return_time(char *file){
   struct stat sb;
   stat(file, &sb);
   char *last_access = ctime(&sb.st_atime);
-  printf("File permissions: %s \n", last_access);
+  printf("Time of last access: %s \n", last_access);
 }
 
 void readable_size(char *file){
@@ -85,5 +85,5 @@ int main(){
   return_time("test_file");
   readable_size("test_file");
   readable_permissions("test_file");
-  
+
 }
