@@ -27,6 +27,20 @@ void return_time(char *file){
   printf("File permissions: %s \n", last_access);
 }
 
+void readable_size(char *file){
+  struct stat sb;
+  stat(file, &sb);
+  size_t size = sb.st_size;
+  int gb = size / 1024;
+  size = size % 1024;
+  int mb = size / 1024;
+  size = size % 1024;
+  int kb = size / 1024;
+  size = size % 1024;
+  int b = size;
+  printf("Readable file size: %d GB %d MB %d KB %d B\n",gb,mb,kb,b);
+}
+
 char* get_permissions(int p){
   if(p == 1)
     return "--x";
@@ -55,21 +69,7 @@ void readable_permissions(char *file){
   char* u = get_permissions(user);
   char* g = get_permissions(group);
   char* o = get_permissions(other);
-  printf("Permissions: %s%s%s\n",u,g,o);
-}
-
-void readable_size(char *file){
-  struct stat sb;
-  stat(file, &sb);
-  size_t size = sb.st_size;
-  int gb = size / 1024;
-  size = size % 1024;
-  int mb = size / 1024;
-  size = size % 1024;
-  int kb = size / 1024;
-  size = size % 1024;
-  int b = size;
-  printf("File size: %d GB %d MB %d KB %d B\n",gb,mb,kb,b);
+  printf("Readable permissions: %s%s%s\n",u,g,o);
 }
 
 int main(){
@@ -83,7 +83,7 @@ int main(){
   return_size("test_file");
   return_mode("test_file");
   return_time("test_file");
-  readable_permissions("test_file");
   readable_size("test_file");
+  readable_permissions("test_file");
   
 }
