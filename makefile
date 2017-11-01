@@ -5,6 +5,5 @@ run: all
 	./a.out
 
 clean:
-	rm *.o
-	rm *~
 	rm a.out
+	rm test_file

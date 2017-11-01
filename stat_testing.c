@@ -9,14 +9,14 @@
 void return_size(char *file){
   struct stat sb;
   stat(file, &sb);
-  int size = sb.st_size;
-  printf("File size: %d \n", size);
+  size_t size = sb.st_size;
+  printf("File size: %lu \n", size);
 }
 
 void return_mode(char *file){
   struct stat sb;
   stat(file, &sb);
-  int permissions = sb.st_mode;
+  mode_t permissions = sb.st_mode;
   printf("File permissions: %o \n", permissions);
 }
 
@@ -27,14 +27,63 @@ void return_time(char *file){
   printf("File permissions: %s \n", last_access);
 }
 
+char* get_permissions(int p){
+  if(p == 1)
+    return "--x";
+  if(p == 2)
+    return "-w-";
+  if(p == 3)
+    return "-wx";
+  if(p == 4)
+    return "r--";
+  if(p == 5)
+    return "r-x";
+  if(p == 6)
+    return "rw-";
+  return "rwx";
+}
+
+void readable_permissions(char *file){
+  struct stat sb;
+  stat(file, &sb);
+  mode_t p = sb.st_mode;
+  int other = p % 8;
+  p = p / 8;
+  int group = p % 8;
+  p = p / 8;
+  int user = p % 8;
+  char* u = get_permissions(user);
+  char* g = get_permissions(group);
+  char* o = get_permissions(other);
+  printf("Permissions: %s%s%s\n",u,g,o);
+}
+
+void readable_size(char *file){
+  struct stat sb;
+  stat(file, &sb);
+  size_t size = sb.st_size;
+  int gb = size / 1024;
+  size = size % 1024;
+  int mb = size / 1024;
+  size = size % 1024;
+  int kb = size / 1024;
+  size = size % 1024;
+  int b = size;
+  printf("File size: %d GB %d MB %d KB %d B\n",gb,mb,kb,b);
+}
+
 int main(){
   //Creating a test file
   int r = open("test_file",O_CREAT|O_WRONLY,0666);
   printf("\nTest file successfully created\n");
-  write(r,"Hello", sizeof("Hello"));
+  char* s = "Hello";
+  write(r,s, sizeof(s));
   close(r);
 
   return_size("test_file");
   return_mode("test_file");
   return_time("test_file");
+  readable_permissions("test_file");
+  readable_size("test_file");
+  
 }
